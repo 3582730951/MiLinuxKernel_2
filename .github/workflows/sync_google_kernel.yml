@@ -20,8 +20,8 @@ jobs:
 
       - name: Clone Google Kernel repository
         run: |
-          git clone https://android.googlesource.com/kernel/common.git google_kernel
-          cd google_kernel
+          git clone https://android.googlesource.com/kernel/common.git
+          cd common
           git checkout 3ca6a2912c7e
 
       - name: Copy Google Kernel to GitHub repository
