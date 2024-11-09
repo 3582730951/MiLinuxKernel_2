@@ -26,7 +26,7 @@ jobs:
 
       - name: Copy Google Kernel to GitHub repository
         run: |
-          rsync -a --exclude='.git' google_kernel/ .
+          rsync -a --exclude='.git' common/ .  # 修正路径为 common/
 
       - name: Commit and push changes to k60pro branch on GitHub
         env:
