@@ -1,38 +1,71 @@
-name: Sync Android Kernel Source
+name: Split and Upload Kernel Source
 
 on:
-  workflow_dispatch: # 允许手动触发工作流
+  workflow_dispatch:  # 允许手动触发工作流
 
 jobs:
-  sync-kernel:
+  build:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout this repo
       uses: actions/checkout@v2
 
-    - name: Clone Android kernel source
+    - name: Set up environment
       run: |
-        git clone https://android.googlesource.com/kernel/common.git
-        cd common
-        git checkout 3ca6a2912c7e
+        sudo apt-get update
+        sudo apt-get install -y git
 
-    - name: Set Git user info
+    - name: Clone Kernel Source
       run: |
+        # 克隆内核源代码
+        git clone https://android.googlesource.com/kernel/common.git /path/to/kernel
+        cd /path/to/kernel
+        # 如果需要特定的 commit，可以在这里切换
+        # git checkout 3ca6a2912c7e
+
+    - name: Split kernel source by directory
+      run: |
+        # 创建一个新的目录用于存放要上传的文件
+        mkdir -p /path/to/split_kernel
+        
+        # 获取内核源码目录中的所有子文件夹
+        SUBDIRS=$(find /path/to/kernel -mindepth 1 -maxdepth 1 -type d)
+        
+        # 按照文件夹分割，每个子目录的内容将被复制到新的目录
+        COUNT=1
+        for DIR in $SUBDIRS; do
+          FOLDER_NAME=$(basename $DIR)
+          echo "Copying $FOLDER_NAME"
+          
+          # 将每个子文件夹的内容复制到新的目录
+          cp -r $DIR /path/to/split_kernel/$FOLDER_NAME
+          
+          # 更新计数器
+          COUNT=$((COUNT+1))
+        done
+
+    - name: Upload files to GitHub
+      run: |
+        # 进入到存放分割后内核源码的目录
+        cd /path/to/split_kernel
+
+        # 设置 Git 用户信息
         git config --global user.name "3582730951"
         git config --global user.email "3582730951@qq.com"
-
-    - name: Set Git buffer size
-      run: git config --global http.postBuffer 524288000  # 500MB
-
-    - name: Push to GitHub
-      run: |
-        # 设置远程仓库的 URL（使用 GitHub Secrets 中存储的 PAT）
-        cd common
-        git remote set-url origin https://3582730951:${{ secrets.GH_PAT }}@github.com/3582730951/MiLinuxKernel_2.git
         
-        # 创建并切换到新分支
-        git checkout -b k60pro_2
+        # 配置远程仓库 URL，使用 GitHub Secrets 中的 PAT
+        git remote set-url origin https://3582730951:${{ secrets.GH_PAT }}@github.com/3582730951/MiLinuxKernel_2.git
 
-        # 推送代码到新的分支
+        # 检出到 k60pro_2 分支，如果分支不存在，则创建它
+        git fetch origin
+        git checkout k60pro_2 || git checkout -b k60pro_2
+
+        # 将文件添加到 Git
+        git add .
+
+        # 提交更改
+        git commit -m "Add split kernel files"
+
+        # 推送到 GitHub 的 k60pro_2 分支
         git push origin k60pro_2
