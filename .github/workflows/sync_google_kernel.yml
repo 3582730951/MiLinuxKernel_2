@@ -23,9 +23,9 @@ jobs:
         git config --global user.name "3582730951"
         git config --global user.email "3582730951@qq.com"
         
-        # 配置远程仓库的 URL（内嵌用户名和 PAT 作为密码）
+        # 配置远程仓库的 URL（使用 GitHub Secrets 中存储的 PAT）
         cd common
-        git remote set-url origin https://3582730951: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@github.com/3582730951/MiLinuxKernel_2.git
+        git remote set-url origin https://3582730951:${{ secrets.GH_PAT }}@github.com/3582730951/MiLinuxKernel_2.git
         
         # 创建并切换到新分支
         git checkout -b k60pro_2
