@@ -17,13 +17,17 @@ jobs:
         cd common
         git checkout 3ca6a2912c7e
 
-    - name: Push to GitHub
+    - name: Set Git user info
       run: |
-        # 设置 Git 用户信息
         git config --global user.name "3582730951"
         git config --global user.email "3582730951@qq.com"
-        
-        # 配置远程仓库的 URL（使用 GitHub Secrets 中存储的 PAT）
+
+    - name: Set Git buffer size
+      run: git config --global http.postBuffer 524288000  # 500MB
+
+    - name: Push to GitHub
+      run: |
+        # 设置远程仓库的 URL（使用 GitHub Secrets 中存储的 PAT）
         cd common
         git remote set-url origin https://3582730951:${{ secrets.GH_PAT }}@github.com/3582730951/MiLinuxKernel_2.git
         
