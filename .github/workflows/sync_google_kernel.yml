@@ -19,10 +19,9 @@ jobs:
     - name: Clone Kernel Source
       run: |
         # 克隆内核源代码
-        git clone https://android.googlesource.com/kernel/common.git /path/to/kernel
-        cd /path/to/kernel
-        # 如果需要特定的 commit，可以在这里切换
-        # git checkout 3ca6a2912c7e
+        git clone https://android.googlesource.com/kernel/common.git
+        cd common
+        git checkout 3ca6a2912c7e
 
     - name: Split kernel source by directory
       run: |
@@ -48,7 +47,7 @@ jobs:
     - name: Upload files to GitHub
       run: |
         # 进入到存放分割后内核源码的目录
-        cd /path/to/split_kernel
+        cd common
 
         # 设置 Git 用户信息
         git config --global user.name "3582730951"
