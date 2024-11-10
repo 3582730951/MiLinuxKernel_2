@@ -18,16 +18,17 @@ jobs:
         git checkout 3ca6a2912c7e
 
     - name: Push to GitHub
-      env:
-        TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
+        # 设置 Git 用户信息
         git config --global user.name "GitHub Actions"
         git config --global user.email "actions@github.com"
-
-        # 添加目标仓库的远程 URL，并使用 GITHUB_TOKEN 进行身份验证
+        
+        # 配置远程仓库的 URL（内嵌用户名和 PAT 作为密码）
         cd common
-        git remote add destination https://$TOKEN@github.com/3582730951/MiLinuxKernel_2.git
-        git checkout -b k60pro_2  # 创建并切换到新分支
+        git remote set-url origin https://3582730951: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@github.com/3582730951/MiLinuxKernel_2.git
+        
+        # 创建并切换到新分支
+        git checkout -b k60pro_2
 
         # 推送代码到新的分支
-        git push destination k60pro_2
+        git push origin k60pro_2
