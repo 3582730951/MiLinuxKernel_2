@@ -15,8 +15,8 @@ jobs:
 
     - name: Set up Git
       run: |
-        git config --global user.name 'Your Name'
-        git config --global user.email 'your.email@example.com'
+        git config --global user.name '3582730951'
+        git config --global user.email '3582730951@qq.com'
 
     - name: Clone the Android kernel source
       run: |
@@ -24,10 +24,14 @@ jobs:
         cd android_kernel_source
         git checkout 3ca6a2912c7e # 指定要同步的提交ID
 
+    - name: Remove existing files and directories
+      run: |
+        rm -rf ./*
+        rm -rf .[^.]* # 删除隐藏文件和目录，但保留 .git 等重要目录
+
     - name: Copy the kernel source to the repository
       run: |
         cp -r android_kernel_source/* .
-        rm -rf android_kernel_source
 
     - name: Commit and push changes
       env:
